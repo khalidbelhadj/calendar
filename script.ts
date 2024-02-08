@@ -6,19 +6,19 @@ const editIcon = ` <?xml version="1.0" encoding="UTF-8"?><svg width="24px" heigh
 
 const cols = Array.from(document.querySelectorAll('.cal-col'));
 cols.forEach(col => (
-  Array.from(col.children).filter(child => child.classList.contains('cal-cell'))[0].style.borderTop = '0.5px solid #aaa'
+  Array.from(col.children).filter(child => child.classList.contains('cal-cell'))[0].setAttribute("style", "border-top: 0.5px solid #aaa")
 ))
 
-function createEventModal(day) {
+function createEventModal(day: number) {
   const modalBackground = document.createElement('div');
-  modalBackground.style = `
+  modalBackground.setAttribute("style", `
 position: fixed;
 top: 0;
 left: 0;
 width: 100%;
 height: 100%;
 background-color: rgba(0, 0, 0, 0.5);
-`;
+`);
   modalBackground.onclick = () => {
     modal.remove();
     modalBackground.remove();
@@ -26,7 +26,7 @@ background-color: rgba(0, 0, 0, 0.5);
 
   const modal = document.createElement('div');
   modal.classList.add('modal');
-  modal.style = `
+  modal.setAttribute("style", `
 position: fixed;
 top: 50%;
 left: 50%;
@@ -34,9 +34,12 @@ transform: translate(-50%, -50%);
 background-color: white;
 padding: 20px;
 box-shadow: 0 0 5px 0 #aaa;
-`;
+`);
+
   modal.innerHTML = `
 <input type="number" id="event-start" placeholder="Start Time">
+<label for="time">add time here</label>
+<input type="time" name="time">
 <input type="number" id="event-end" placeholder="End Time">
 <button id="create-event">Create Event</button>
 `;
@@ -44,9 +47,10 @@ box-shadow: 0 0 5px 0 #aaa;
   document.body.appendChild(modalBackground);
   document.body.appendChild(modal);
 
-  document.getElementById('create-event').onclick = () => {
-    const start = document.getElementById('event-start').value;
-    const end = document.getElementById('event-end').value;
+  document.getElementById('create-event')!.onclick = () => {
+
+    const start = +(document.getElementById('event-start')! as HTMLInputElement).value;
+    const end = +(document.getElementById('event-end')! as HTMLInputElement).value;
 
     if (+start < 9 || +end > 20) return alert('Invalid time range. Please select a time between 9 and 18.');
     if (+start >= +end) return alert('Invalid time range. Please select a start time that is less than the end time.');
@@ -57,16 +61,16 @@ box-shadow: 0 0 5px 0 #aaa;
   }
 }
 
-function editEventModal(event, day, start, end) {
+function editEventModal(event: HTMLDivElement, day: number, start: number, end: number) {
   const modalBackground = document.createElement('div');
-  modalBackground.style = `
+  modalBackground.setAttribute("style", `
 position: fixed;
 top: 0;
 left: 0;
 width: 100%;
 height: 100%;
 background-color: rgba(0, 0, 0, 0.5);
-`;
+`);
   modalBackground.onclick = () => {
     modal.remove();
     modalBackground.remove();
@@ -74,7 +78,7 @@ background-color: rgba(0, 0, 0, 0.5);
 
   const modal = document.createElement('div');
   modal.classList.add('modal');
-  modal.style = `
+  modal.setAttribute("style",`
 position: fixed;
 top: 50%;
 left: 50%;
@@ -82,7 +86,7 @@ transform: translate(-50%, -50%);
 background-color: white;
 padding: 20px;
 box-shadow: 0 0 5px 0 #aaa;
-`;
+`);
   modal.innerHTML = `
 <input type="number" id="event-start" placeholder="Start Time" value="${start + 9 - 1}">
 <input type="number" id="event-end" placeholder="End Time" value="${end + 9 - 1}">
@@ -92,9 +96,9 @@ box-shadow: 0 0 5px 0 #aaa;
   document.body.appendChild(modalBackground);
   document.body.appendChild(modal);
 
-  document.getElementById('create-event').onclick = () => {
-    const start = document.getElementById('event-start').value;
-    const end = document.getElementById('event-end').value;
+  document.getElementById('create-event')!.onclick = () => {
+    const start = +(document.getElementById('event-start')! as HTMLInputElement).value;
+    const end = +(document.getElementById('event-end')! as HTMLInputElement).value;
 
     if (+start < 9 || +end > 20) return alert('Invalid time range. Please select a time between 9 and 18.');
     if (+start >= +end) return alert('Invalid time range. Please select a start time that is less than the end time.');
@@ -106,7 +110,7 @@ box-shadow: 0 0 5px 0 #aaa;
   }
 }
 
-function createEvent(day, start, end, text) {
+function createEvent(day: number, start: number, end: number, text?: string) {
   start = start - 9 + 1;
   end = end - 9 + 1;
 
@@ -116,27 +120,27 @@ function createEvent(day, start, end, text) {
   event.style.height = `${(end - start) * CELL_HEIGHT}%`;
 
   const child = document.createElement('div');
-  child.style = `
+  child.setAttribute("style", `
 display: flex;
 justify-content: space-between;
 align-items: center;
 margin: 5px;
-`;
+`);
 
   const textDiv = document.createElement('div');
   textDiv.textContent = text || 'Event';
   child.appendChild(textDiv);
 
   const buttons = document.createElement('div');
-  buttons.style = `
+  buttons.setAttribute("style", `
 display: flex;
 justify-content: space-between;
 align-items: center;
-`;
+`);
 
   const remove = document.createElement('button');
   remove.innerHTML = deleteIcon;
-  remove.style = `
+  remove.setAttribute("style", `
 background-color: #f1f1f1;
 border: none;
 border-radius: 5px;
@@ -146,14 +150,14 @@ height: 20px
 width: 20px;
 align-items: center;
 justify-content: center;
-`;
+`);
   remove.onclick = () => event.remove()
   buttons.appendChild(remove);
 
   const edit = document.createElement('button');
   edit.innerHTML = editIcon;
 
-  edit.style = `
+  edit.setAttribute("style", `
 background-color: #f1f1f1;
 border: none;
 border-radius: 5px;
@@ -163,7 +167,7 @@ height: 30px
 width: 30px;
 align-items: center;
 justify-content: center;
-`;
+`);
   edit.onclick = () => editEventModal(event, day, start, end);
   buttons.appendChild(edit);
 
@@ -173,7 +177,7 @@ justify-content: center;
   cols[day].appendChild(event);
 }
 
-const days = Array.from(document.querySelectorAll('.day'));
+const days = Array.from(document.querySelectorAll('.day')) as HTMLButtonElement[];
 
 days.forEach((day, idx) => {
   day.onclick = () => createEventModal(idx);
